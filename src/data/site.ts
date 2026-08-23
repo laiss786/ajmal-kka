@@ -92,7 +92,7 @@ export const site = {
     {
       name: "Gulf Own Travel and Tourism LLC",
       role: "Cross-Border Operations & Sales Leader",
-      period: "2024 — 2026",
+      period: "2024 — Aug 2026",
       blurb:
         "Scaled travel and tourism operations across the Gulf and India, running the Kochi branch end to end while aligning strategy and workflows with headquarters in Dubai.",
       highlights: [
@@ -121,13 +121,12 @@ export const site = {
       logo: gulfOwnLogo,
     },
     {
-      // NOTE: brochure reads "Kosta Shipping LLP", not LLC — confirm which.
       name: "Kosta Shipping LLP",
       role: "Branch Operations & Sales Setup Lead",
       // TODO(client): dates for this one
       period: null,
       blurb:
-        "Led regional expansion into Chennai, building sales frameworks, marketing strategy and ground-level teams from zero for a Gujarat-headquartered logistics firm.",
+        "Led regional expansion into Chennai for the Ernakulam-headquartered logistics firm, building sales frameworks, marketing strategy and ground-level teams from zero.",
       highlights: [
         {
           title: "Regional expansion",
@@ -150,7 +149,7 @@ export const site = {
             "Negotiated and secured key B2B logistics accounts, aligned to company-wide growth targets.",
         },
       ],
-      location: "Chennai",
+      location: "Chennai · HQ Ernakulam",
       logo: kostaLogo,
     },
     { name: "Smash Travel and Tourism LLC", role: null, period: null, blurb: null, highlights: [], location: "Dubai", logo: null },
