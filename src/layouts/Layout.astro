@@ -96,101 +96,95 @@ const personSchema = {
     <DraftBadge />
 
     <script>
-      import { gsap } from "gsap";
-      import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+      // Reveal + parallax without an animation library. This replaced GSAP +
+      // ScrollTrigger, which was 111KB for what amounts to fade-ups and one
+      // parallax; the transitions themselves live in global.css and this only
+      // decides when to trigger them.
       clearTimeout((window as any).__revealFailsafe);
-      gsap.registerPlugin(ScrollTrigger);
 
-      const q = <T extends HTMLElement>(sel: string) =>
-        gsap.utils.toArray<T>(sel);
+      const $$ = <T extends Element>(sel: string) =>
+        Array.from(document.querySelectorAll<T>(sel));
 
-      const singles = q("[data-reveal]");
-      const groups = q("[data-reveal-group]");
-      const heroItems = q("[data-hero-item]");
-      const groupChildren = groups.flatMap((g) =>
-        Array.from(g.children),
-      ) as HTMLElement[];
+      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // No observer means nothing would ever un-hide these, and the failsafe
+      // above has already been cleared — so drop straight to visible.
+      const noObserver = typeof IntersectionObserver === "undefined";
 
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
+      const singles = $$<HTMLElement>("[data-reveal]");
+      const groups = $$<HTMLElement>("[data-reveal-group]");
+      const heroItems = $$<HTMLElement>("[data-hero-item]");
+      const STAGGER = 80; // ms between siblings
 
-      if (reduceMotion) {
-        gsap.set([...singles, ...groupChildren, ...heroItems], {
-          opacity: 1,
-          y: 0,
-        });
+      const show = (el: HTMLElement, delay = 0) => {
+        if (delay) el.style.transitionDelay = `${delay}ms`;
+        el.classList.add("is-in");
+      };
+
+      if (reduceMotion || noObserver) {
+        [...singles, ...heroItems, ...groups.flatMap((g) => [...g.children])].forEach(
+          (el) => (el as HTMLElement).classList.add("is-in"),
+        );
       } else {
-        // Hero runs on load rather than on scroll — it's already in view, so a
-        // ScrollTrigger would just fire immediately and lose the stagger.
-        if (heroItems.length) {
-          // Offset is set synchronously rather than via startAt, so the
-          // elements hold their pre-animation position from the first frame
-          // instead of only once the delayed tween begins.
-          gsap.set(heroItems, { y: 28 });
-          gsap
-            .timeline({
-              delay: 0.15,
-              defaults: { ease: "power3.out", duration: 0.9 },
-            })
-            .to(heroItems, { opacity: 1, y: 0, stagger: 0.1 });
+        // Hero is already in view on load, so it plays immediately rather than
+        // waiting on an observer that would fire at once and lose the stagger.
+        requestAnimationFrame(() =>
+          heroItems.forEach((el, i) => show(el, 150 + i * 100)),
+        );
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const el = entry.target as HTMLElement;
+              if (el.hasAttribute("data-reveal-group")) {
+                Array.from(el.children).forEach((child, i) =>
+                  show(child as HTMLElement, i * STAGGER),
+                );
+              } else {
+                show(el);
+              }
+              io.unobserve(el);
+            }
+          },
+          // ~15% up from the bottom edge, matching the old "top 85%".
+          { rootMargin: "0px 0px -15% 0px", threshold: 0 },
+        );
+
+        [...singles, ...groups].forEach((el) => io.observe(el));
+
+        // Parallax, rAF-throttled so it never runs more than once a frame.
+        const parallax = $$<HTMLElement>("[data-parallax]");
+        if (parallax.length) {
+          let queued = false;
+          const update = () => {
+            queued = false;
+            const vh = innerHeight;
+            for (const el of parallax) {
+              const r = el.getBoundingClientRect();
+              if (r.bottom < 0 || r.top > vh) continue; // offscreen: skip
+              const strength = Number(el.dataset.parallax) || 8;
+              const progress = (r.top + r.height / 2 - vh / 2) / vh;
+              el.style.transform = `translate3d(0, ${(progress * strength).toFixed(2)}%, 0)`;
+            }
+          };
+          const onScroll = () => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(update);
+          };
+          update();
+          addEventListener("scroll", onScroll, { passive: true });
+          addEventListener("resize", onScroll, { passive: true });
         }
-
-        // Grouped children cascade; the group itself is only a marker.
-        groups.forEach((group) => {
-          gsap.to(Array.from(group.children), {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            stagger: 0.08,
-            startAt: { y: 26 },
-            scrollTrigger: { trigger: group, start: "top 82%", once: true },
-          });
-        });
-
-        singles.forEach((el) => {
-          gsap.to(el, {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            startAt: { y: 26 },
-            scrollTrigger: { trigger: el, start: "top 85%", once: true },
-          });
-        });
-
-        // Parallax. Strength comes from the attribute so each element can be
-        // tuned without touching this file.
-        q<HTMLElement>("[data-parallax]").forEach((el) => {
-          const strength = Number(el.dataset.parallax || 8);
-          gsap.fromTo(
-            el,
-            { yPercent: strength },
-            {
-              yPercent: -strength,
-              ease: "none",
-              scrollTrigger: {
-                trigger: el,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 0.6,
-              },
-            },
-          );
-        });
       }
 
-      // Nav gains a solid ground once the hero is behind it. A plain listener
-      // rather than a ScrollTrigger: onUpdate only fires while its trigger is
-      // active, which is not the whole-page behaviour wanted here.
+      // Nav solidifies once the hero is behind it.
       const header = document.querySelector("header");
       if (header) {
         const syncHeader = () =>
-          header.classList.toggle("is-scrolled", window.scrollY > 80);
+          header.classList.toggle("is-scrolled", scrollY > 80);
         syncHeader();
-        window.addEventListener("scroll", syncHeader, { passive: true });
+        addEventListener("scroll", syncHeader, { passive: true });
       }
     </script>
   </body>

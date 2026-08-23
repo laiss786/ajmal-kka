@@ -169,19 +169,50 @@ header {
     border-color 0.35s ease;
 }
 
+/* Translucent only while it sits over the hero. Past 80px it solidifies —
+   necessary, not decorative: the ivory sections start a full viewport down, and
+   white nav text over a barely-tinted ivory panel would fail contrast badly. */
 header.is-scrolled {
   background-color: color-mix(in oklab, var(--color-obsidian) 94%, transparent);
   border-color: color-mix(in oklab, var(--color-gold) 22%, transparent);
 }
 
-/* Scroll reveal. The `js` class is set by an inline script in <head>, so
-   without JS the content simply renders visible instead of staying hidden.
-   A failsafe in that same script strips the class if the animation bundle
-   never executes, so a broken script can't leave the page blank. */
+/* Without backdrop-filter the glass reads as washed-out grey, so fall back to
+   a mostly-opaque ground. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  header {
+    background-color: color-mix(in oklab, var(--color-obsidian) 88%, transparent);
+  }
+}
+
+/* Scroll reveal. Motion lives in CSS; JS only decides *when* by toggling
+   .is-in, which is why this needs no animation library. The `js` class is set
+   by an inline script in <head>, so without JS the content simply renders
+   visible instead of staying hidden. A failsafe in that same script strips the
+   class if the reveal script never executes, so a broken script can't leave
+   the page blank. */
 .js [data-reveal],
 .js [data-hero-item],
 .js [data-reveal-group] > * {
   opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.js [data-reveal].is-in,
+.js [data-hero-item].is-in,
+.js [data-reveal-group] > .is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Parallax targets are moved by inline transform from rAF; the transition
+   above must not apply to them or the movement lags the scroll. */
+.js [data-parallax] {
+  transition: none;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -193,5 +224,11 @@ header.is-scrolled {
   .js [data-hero-item],
   .js [data-reveal-group] > * {
     opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .js [data-parallax] {
+    transform: none !important;
   }
 }
