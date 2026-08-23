@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+---
+
+<Layout title={`Page not found — ${site.name}`} description="This page doesn't exist.">
+  <main
+    id="main"
+    class="flex min-h-screen items-center bg-obsidian text-white"
+  >
+    <div class="wrap">
+      <p class="eyebrow eyebrow-on-dark">Error 404</p>
+
+      <h1 class="mt-6 text-white">Page not found</h1>
+
+      <p class="prose-measure mt-6 text-lg text-white/60">
+        That page doesn't exist, or it may have moved.
+      </p>
+
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="/" class="btn btn-gold focus-ring">Back to home</a>
+        <a href="/#contact" class="btn btn-outline focus-ring">Get in touch</a>
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,99 @@
+---
+// Wired for Netlify Forms: Netlify parses the built HTML at deploy time and
+// registers any form carrying data-netlify, so no backend or JS is required.
+//
+// IF THIS DEPLOYS TO VERCEL INSTEAD, this form silently no-ops — it will look
+// like it submits and nothing will arrive. Swap to Formspree by replacing
+// `action` with the Formspree endpoint and deleting the two Netlify-specific
+// attributes plus the hidden form-name input.
+// The gold focus ring comes from the global :focus-visible rule; this only
+// adds the border tint so the field reads as active on pointer focus too.
+const FIELD =
+  "w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-white " +
+  "placeholder:text-white/30 transition-colors focus:border-gold";
+---
+
+<form
+  name="contact"
+  method="POST"
+  action="/thanks/"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="space-y-5"
+>
+  <input type="hidden" name="form-name" value="contact" />
+
+  <p class="hidden" aria-hidden="true">
+    <label>
+      Leave this field empty
+      <input name="bot-field" tabindex="-1" autocomplete="off" />
+    </label>
+  </p>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label for="cf-name" class="mb-2 block text-sm text-white/70">
+        Name <span class="text-gold" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="cf-name"
+        name="name"
+        type="text"
+        required
+        autocomplete="name"
+        class={FIELD}
+        placeholder="Your name"
+      />
+    </div>
+
+    <div>
+      <label for="cf-email" class="mb-2 block text-sm text-white/70">
+        Email <span class="text-gold" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="cf-email"
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        class={FIELD}
+        placeholder="you@company.com"
+      />
+    </div>
+  </div>
+
+  <div>
+    <label for="cf-company" class="mb-2 block text-sm text-white/70">
+      Company <span class="text-white/60">(optional)</span>
+    </label>
+    <input
+      id="cf-company"
+      name="company"
+      type="text"
+      autocomplete="organization"
+      class={FIELD}
+      placeholder="Company name"
+    />
+  </div>
+
+  <div>
+    <label for="cf-message" class="mb-2 block text-sm text-white/70">
+      Message <span class="text-gold" aria-hidden="true">*</span>
+    </label>
+    <textarea
+      id="cf-message"
+      name="message"
+      rows="5"
+      required
+      class={`${FIELD} resize-y`}
+      placeholder="What would you like to talk about?"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-gold focus-ring w-full justify-center sm:w-auto">
+    Send message
+  </button>
+
+  <p class="text-xs text-white/60">
+    Fields marked <span class="text-gold" aria-hidden="true">*</span> are required.
+  </p>
+</form>

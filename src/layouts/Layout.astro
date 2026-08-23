@@ -1,0 +1,197 @@
+---
+import "@fontsource-variable/outfit";
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import DraftBadge from "../components/DraftBadge.astro";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} — ${site.title}`,
+  description = site.tagline,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "http://localhost:4321");
+// JPEG rather than PNG: the card is photographic, and the PNG was 334KB
+// against 51KB here. Some scrapers cap image size before they'll unfurl.
+const ogImage = new URL("/og.jpg", Astro.site ?? "http://localhost:4321");
+
+// Person schema. Only emits fields we actually have — sameAs and email stay
+// out until the client supplies them rather than shipping empty values.
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  jobTitle: site.title,
+  description: site.tagline,
+  address: site.contact.locations.map((l) => ({
+    "@type": "PostalAddress",
+    addressLocality: l,
+  })),
+  worksFor: site.companies.map((c) => ({
+    "@type": "Organization",
+    name: c.name,
+  })),
+  ...(site.contact.email ? { email: site.contact.email } : {}),
+  ...(site.contact.linkedin || site.contact.instagram
+    ? { sameAs: [site.contact.linkedin, site.contact.instagram].filter(Boolean) }
+    : {}),
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <meta name="theme-color" content="#0F0F12" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.title}`} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(personSchema)}
+    />
+
+    <!-- Set before paint so reveal targets start hidden without a flash.
+         If JS is off the class never lands and everything stays visible.
+         The failsafe covers the other direction: if the reveal bundle fails to
+         execute, un-hide everything rather than leaving a blank page. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      window.__revealFailsafe = setTimeout(function () {
+        document.documentElement.classList.remove("js");
+      }, 2500);
+    </script>
+  </head>
+
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <slot />
+    <DraftBadge />
+
+    <script>
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      clearTimeout((window as any).__revealFailsafe);
+      gsap.registerPlugin(ScrollTrigger);
+
+      const q = <T extends HTMLElement>(sel: string) =>
+        gsap.utils.toArray<T>(sel);
+
+      const singles = q("[data-reveal]");
+      const groups = q("[data-reveal-group]");
+      const heroItems = q("[data-hero-item]");
+      const groupChildren = groups.flatMap((g) =>
+        Array.from(g.children),
+      ) as HTMLElement[];
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (reduceMotion) {
+        gsap.set([...singles, ...groupChildren, ...heroItems], {
+          opacity: 1,
+          y: 0,
+        });
+      } else {
+        // Hero runs on load rather than on scroll — it's already in view, so a
+        // ScrollTrigger would just fire immediately and lose the stagger.
+        if (heroItems.length) {
+          // Offset is set synchronously rather than via startAt, so the
+          // elements hold their pre-animation position from the first frame
+          // instead of only once the delayed tween begins.
+          gsap.set(heroItems, { y: 28 });
+          gsap
+            .timeline({
+              delay: 0.15,
+              defaults: { ease: "power3.out", duration: 0.9 },
+            })
+            .to(heroItems, { opacity: 1, y: 0, stagger: 0.1 });
+        }
+
+        // Grouped children cascade; the group itself is only a marker.
+        groups.forEach((group) => {
+          gsap.to(Array.from(group.children), {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            stagger: 0.08,
+            startAt: { y: 26 },
+            scrollTrigger: { trigger: group, start: "top 82%", once: true },
+          });
+        });
+
+        singles.forEach((el) => {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            startAt: { y: 26 },
+            scrollTrigger: { trigger: el, start: "top 85%", once: true },
+          });
+        });
+
+        // Parallax. Strength comes from the attribute so each element can be
+        // tuned without touching this file.
+        q<HTMLElement>("[data-parallax]").forEach((el) => {
+          const strength = Number(el.dataset.parallax || 8);
+          gsap.fromTo(
+            el,
+            { yPercent: strength },
+            {
+              yPercent: -strength,
+              ease: "none",
+              scrollTrigger: {
+                trigger: el,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            },
+          );
+        });
+      }
+
+      // Nav gains a solid ground once the hero is behind it. A plain listener
+      // rather than a ScrollTrigger: onUpdate only fires while its trigger is
+      // active, which is not the whole-page behaviour wanted here.
+      const header = document.querySelector("header");
+      if (header) {
+        const syncHeader = () =>
+          header.classList.toggle("is-scrolled", window.scrollY > 80);
+        syncHeader();
+        window.addEventListener("scroll", syncHeader, { passive: true });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+interface Props {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  /** Dark sections invert the palette: obsidian ground, gold eyebrow. */
+  dark?: boolean;
+  class?: string;
+}
+
+const { id, eyebrow, heading, dark = false, class: className = "" } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    "py-24 md:py-32",
+    dark ? "bg-obsidian text-white" : "bg-ivory text-ink",
+    className,
+  ]}
+>
+  <div class="wrap">
+    <div data-reveal-group class="mb-12 md:mb-16">
+      <p class:list={["eyebrow", dark && "eyebrow-on-dark"]}>{eyebrow}</p>
+      <h2 class:list={["mt-3", dark && "text-white"]}>{heading}</h2>
+    </div>
+
+    <slot />
+  </div>
+</section>

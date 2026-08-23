@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+/* Brand tokens — see Ajmal_Brand_System.png for the full spec and the
+   contrast audit behind these values. */
+@theme {
+  --color-ink: #16161a;
+  --color-graphite: #57544c;
+  --color-ivory: #faf8f5;
+  --color-obsidian: #0f0f12;
+  --color-panel: #ffffff;
+  --color-panel-dark: #1c1c21;
+  --color-gold: #c9a15a;
+  --color-bronze: #8a6620;
+  --color-hairline: #e3ded5;
+
+  --font-display: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+    font-weight: 200;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  /* Gold is only legible as text on dark surfaces (2.3:1 on ivory).
+     On light backgrounds use bronze instead — see the brand sheet. */
+  a {
+    color: inherit;
+  }
+
+  /* Gold clears 3:1 against both grounds we use, so one focus colour works
+     on ivory and obsidian alike. */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .prose-measure {
+    max-width: 68ch;
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-bronze);
+  }
+
+  .eyebrow-on-dark {
+    color: var(--color-gold);
+  }
+
+
+  /* Pill CTA. Gold fill always takes an ink label — never white. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .btn-gold {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  .btn-gold:hover {
+    background-color: #d9b473;
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+
+  /* Off-screen until focused, then drops into view. Fixed rather than
+     absolute so it lands in the viewport even if focus happens mid-scroll. */
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: -100%;
+    z-index: 100;
+    border-radius: 0.5rem;
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
+
+/* Header sits transparent over the hero, then gains a ground once scrolled.
+   Deliberately UNLAYERED: the element carries Tailwind's `bg-obsidian/80` from
+   @layer utilities, and layered styles lose to later layers no matter how
+   specific they are. Unlayered declarations outrank every layer, so this is
+   what actually lets the scrolled state override the utility. */
+header {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+header.is-scrolled {
+  background-color: color-mix(in oklab, var(--color-obsidian) 94%, transparent);
+  border-color: color-mix(in oklab, var(--color-gold) 22%, transparent);
+}
+
+/* Scroll reveal. The `js` class is set by an inline script in <head>, so
+   without JS the content simply renders visible instead of staying hidden.
+   A failsafe in that same script strips the class if the animation bundle
+   never executes, so a broken script can't leave the page blank. */
+.js [data-reveal],
+.js [data-hero-item],
+.js [data-reveal-group] > * {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-reveal],
+  .js [data-hero-item],
+  .js [data-reveal-group] > * {
+    opacity: 1;
+  }
+}

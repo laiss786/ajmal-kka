@@ -1,0 +1,283 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import Stats from "../components/Stats.astro";
+import Section from "../components/Section.astro";
+import ContactForm from "../components/ContactForm.astro";
+import Pending from "../components/Pending.astro";
+import { site } from "../data/site";
+
+const { contact, press, projects, companies, expertise, bio, draft } = site;
+const hasPress = press.length > 0;
+
+// Pad the projects grid so the section keeps its rhythm while we wait on
+// content. These are empty slots, never invented case studies.
+const emptySlots = Math.max(0, site.minProjectSlots - projects.length);
+---
+
+<Layout>
+  <Nav />
+
+  <main id="main">
+    <Hero />
+    <Stats />
+
+    <!-- About -->
+    <Section id="about" eyebrow="About" heading="Background">
+      <div data-reveal-group class="prose-measure space-y-6 text-graphite">
+        {bio.map((para) => <p>{para}</p>)}
+      </div>
+    </Section>
+
+    <!-- Companies & Roles -->
+    <Section
+      id="companies"
+      eyebrow="Companies & Roles"
+      heading="Where I work"
+      dark
+    >
+      <div
+        data-reveal-group
+        class="grid gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {
+          companies.map((company) => (
+            <article class="group bg-obsidian p-8 transition-colors duration-300 hover:bg-panel-dark">
+              <div
+                class="mb-6 flex size-11 items-center justify-center rounded-lg border border-dashed border-white/15 text-[10px] text-white/45"
+                aria-hidden="true"
+              >
+                {/* TODO(client): company logo */}
+                logo
+              </div>
+
+              <h3 class="text-white transition-colors group-hover:text-gold">
+                {company.name}
+              </h3>
+
+              <p class="mt-2 text-sm text-gold">
+                {company.role ?? (
+                  <Pending dark label="Title pending" />
+                )}
+              </p>
+
+              <p class="mt-4 text-sm text-white/60">
+                {company.blurb ?? (
+                  <Pending dark label="Description pending" />
+                )}
+              </p>
+
+              <p class="mt-6 text-xs tracking-widest text-white/60 uppercase">
+                {company.location}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </Section>
+
+    <!-- Projects & Work -->
+    <Section
+      id="projects"
+      eyebrow="Projects & Work"
+      heading="Projects, works and results"
+    >
+      <div class="space-y-px overflow-hidden rounded-xl bg-hairline">
+        {
+          projects.map((project) => (
+            <article
+              data-reveal-group
+              class="grid gap-8 bg-panel p-8 md:grid-cols-12 md:p-12"
+            >
+              <div class="md:col-span-5">
+                <div class="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-hairline bg-ivory">
+                  {/* TODO(client): project image / screenshot */}
+                  <Pending label="Image pending" />
+                </div>
+              </div>
+
+              <div class="md:col-span-7">
+                <h3>{project.title}</h3>
+                <p class="mt-4 text-graphite">{project.summary}</p>
+
+                {project.role && <p class="mt-4 text-graphite">{project.role}</p>}
+
+                <div class="mt-6 border-l-2 border-gold pl-4">
+                  {project.result ? (
+                    <p class="text-sm text-bronze">{project.result}</p>
+                  ) : (
+                    <Pending label="Result / metric pending — this is the line that converts" />
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        }
+
+        {
+          Array.from({ length: emptySlots }).map((_, i) => (
+            <article
+              data-reveal
+              class="grid gap-8 bg-panel p-8 md:grid-cols-12 md:p-12"
+            >
+              <div class="md:col-span-5">
+                <div class="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-hairline bg-ivory">
+                  <Pending label="Image pending" />
+                </div>
+              </div>
+
+              <div class="md:col-span-7">
+                <h3 class="text-graphite">
+                  Project {projects.length + i + 1}
+                </h3>
+                <p class="mt-4 max-w-md text-sm text-graphite">
+                  Awaiting details — what the project was, what you did, and what
+                  came out of it.
+                </p>
+                <div class="mt-6">
+                  <Pending label="Awaiting client content" />
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </Section>
+
+    <!-- What I Do -->
+    <Section id="expertise" eyebrow="What I Do" heading="Core capabilities">
+      <ul data-reveal-group class="flex flex-wrap gap-3">
+        {
+          expertise.map((skill) => (
+            <li class="rounded-full border border-hairline bg-panel px-5 py-2.5 text-sm text-graphite transition-colors duration-300 hover:border-bronze hover:text-ink">
+              {skill}
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <!-- Press & Recognition -->
+    {
+      (hasPress || draft) && (
+        <Section
+          id="press"
+          eyebrow="Press & Recognition"
+          heading="Selected coverage"
+        >
+          {hasPress ? (
+            <ul
+              data-reveal-group
+              class="divide-y divide-hairline border-y border-hairline"
+            >
+              {press.map((item) => (
+                <li>
+                  <a
+                    href={item.url}
+                    class="focus-ring flex flex-wrap items-baseline justify-between gap-4 rounded-sm py-6 transition-colors hover:text-bronze"
+                  >
+                    <span class="text-lg">{item.title}</span>
+                    <span class="text-sm text-graphite">
+                      {item.outlet} · {item.date}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div
+              data-reveal
+              class="rounded-xl border border-dashed border-hairline p-10 text-center"
+            >
+              <p class="text-graphite">
+                No press items yet. This section hides itself automatically once
+                draft mode is off and the list is still empty.
+              </p>
+              <div class="mt-4">
+                <Pending label="Awaiting interviews, articles or awards" />
+              </div>
+            </div>
+          )}
+        </Section>
+      )
+    }
+
+    <!-- Contact -->
+    <Section id="contact" eyebrow="Contact" heading="Let's talk" dark>
+      <div class="grid gap-12 md:grid-cols-12 md:gap-16">
+        <div data-reveal-group class="space-y-8 md:col-span-5">
+          <div class="space-y-4">
+            {
+              contact.email ? (
+                <a
+                  href={`mailto:${contact.email}`}
+                  class="focus-ring block rounded-sm text-xl text-gold"
+                >
+                  {contact.email}
+                </a>
+              ) : (
+                <Pending dark label="Public email address pending" />
+              )
+            }
+
+            {contact.phone ? (
+              <p class="text-lg text-white/80">{contact.phone}</p>
+            ) : (
+              <div><Pending dark label="Phone / WhatsApp — publish or not?" /></div>
+            )}
+          </div>
+
+          <div class="flex flex-wrap gap-4 text-sm">
+            {
+              contact.linkedin ? (
+                <a
+                  href={contact.linkedin}
+                  class="focus-ring rounded-sm text-white/70 transition-colors hover:text-gold"
+                >
+                  LinkedIn
+                </a>
+              ) : (
+                <Pending dark label="LinkedIn URL pending" />
+              )
+            }
+            {
+              contact.instagram ? (
+                <a
+                  href={contact.instagram}
+                  class="focus-ring rounded-sm text-white/70 transition-colors hover:text-gold"
+                >
+                  Instagram
+                </a>
+              ) : (
+                <Pending dark label="Socials pending" />
+              )
+            }
+          </div>
+
+          <div class="border-t border-white/10 pt-8">
+            <p class="text-xs tracking-widest text-white/60 uppercase">
+              Based in
+            </p>
+            <p class="mt-3 text-lg text-white/80">
+              {contact.locations.join(" · ")}
+            </p>
+          </div>
+        </div>
+
+        <div data-reveal class="md:col-span-7">
+          <ContactForm />
+        </div>
+      </div>
+    </Section>
+  </main>
+
+  <footer class="bg-obsidian pb-12 text-white/60">
+    <div
+      class="wrap flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm"
+    >
+      <p>© {new Date().getFullYear()} {site.name}</p>
+      <p>Kaelo Solutions</p>
+    </div>
+  </footer>
+</Layout>

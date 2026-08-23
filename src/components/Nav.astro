@@ -1,0 +1,133 @@
+---
+import { site } from "../data/site";
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-obsidian/90 backdrop-blur-md"
+>
+  <nav class="wrap flex h-16 items-center justify-between" aria-label="Main">
+    <a
+      href="#top"
+      class="font-display text-base font-light tracking-wide text-white focus-ring rounded-sm"
+    >
+      {site.name}
+    </a>
+
+    <ul class="hidden items-center gap-8 md:flex">
+      {
+        site.nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="focus-ring rounded-sm text-sm text-white/70 transition-colors hover:text-gold"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a
+      href="#contact"
+      class="btn btn-outline focus-ring hidden py-2 text-sm md:inline-flex"
+    >
+      Get in touch
+    </a>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="focus-ring -mr-2 grid h-10 w-10 place-items-center rounded-md md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+    >
+      <span class="relative block h-4 w-6" aria-hidden="true">
+        <span
+          data-bar="top"
+          class="absolute left-0 block h-px w-6 bg-white transition-transform duration-300"
+          style="top: 2px"></span>
+        <span
+          data-bar="mid"
+          class="absolute top-1/2 left-0 block h-px w-6 -translate-y-1/2 bg-white transition-opacity duration-200"
+        ></span>
+        <span
+          data-bar="bot"
+          class="absolute left-0 block h-px w-6 bg-white transition-transform duration-300"
+          style="bottom: 2px"></span>
+      </span>
+    </button>
+  </nav>
+
+  <!-- Mobile panel. Hidden from AT and tab order until opened. -->
+  <div
+    id="mobile-menu"
+    hidden
+    class="border-t border-white/10 bg-obsidian md:hidden"
+  >
+    <ul class="wrap flex flex-col py-4">
+      {
+        site.nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              data-menu-link
+              class="focus-ring block rounded-sm py-3 text-base text-white/80 transition-colors hover:text-gold"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-3">
+        <a href="#contact" data-menu-link class="btn btn-gold focus-ring w-full justify-center">
+          Get in touch
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
+  const bars = {
+    top: menu.ownerDocument.querySelector<HTMLElement>('[data-bar="top"]')!,
+    mid: menu.ownerDocument.querySelector<HTMLElement>('[data-bar="mid"]')!,
+    bot: menu.ownerDocument.querySelector<HTMLElement>('[data-bar="bot"]')!,
+  };
+
+  const setOpen = (open: boolean) => {
+    menu.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    document.body.style.overflow = open ? "hidden" : "";
+
+    bars.top.style.transform = open ? "translateY(7px) rotate(45deg)" : "";
+    bars.bot.style.transform = open ? "translateY(-7px) rotate(-45deg)" : "";
+    bars.mid.style.opacity = open ? "0" : "1";
+  };
+
+  toggle.addEventListener("click", () =>
+    setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+  );
+
+  // Anchor links don't navigate, so close explicitly.
+  menu.querySelectorAll("[data-menu-link]").forEach((link) =>
+    link.addEventListener("click", () => setOpen(false)),
+  );
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  // Leaving mobile width with the menu open would otherwise strand the
+  // scroll lock, since the panel itself is display:none above md.
+  matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
+    if (e.matches) setOpen(false);
+  });
+</script>

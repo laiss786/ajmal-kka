@@ -1,0 +1,27 @@
+---
+// Marks content still owed by the client. Deliberately visible — a placeholder
+// that looks like finished copy is how filler ends up on a live site.
+interface Props {
+  label: string;
+  dark?: boolean;
+  class?: string;
+}
+
+const { label, dark = false, class: className = "" } = Astro.props;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center gap-2 rounded-full border border-dashed px-3 py-1 text-xs",
+    dark ? "border-gold/50 text-gold" : "border-bronze/50 text-bronze",
+    className,
+  ]}
+>
+  <span
+    class:list={[
+      "size-1.5 rounded-full",
+      dark ? "bg-gold/60" : "bg-bronze/60",
+    ]}
+    aria-hidden="true"></span>
+  {label}
+</span>
