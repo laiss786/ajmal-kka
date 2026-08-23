@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
@@ -37,40 +38,74 @@ const emptySlots = Math.max(0, site.minProjectSlots - projects.length);
       heading="Where I work"
       dark
     >
-      <div
-        data-reveal-group
-        class="grid gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-2 lg:grid-cols-3"
-      >
+      <div class="space-y-px overflow-hidden rounded-xl bg-white/10">
         {
           companies.map((company) => (
-            <article class="group bg-obsidian p-8 transition-colors duration-300 hover:bg-panel-dark">
-              <div
-                class="mb-6 flex size-11 items-center justify-center rounded-lg border border-dashed border-white/15 text-[10px] text-white/45"
-                aria-hidden="true"
-              >
-                {/* TODO(client): company logo */}
-                logo
+            <article
+              data-reveal-group
+              class="group grid gap-8 bg-obsidian p-8 transition-colors duration-300 md:grid-cols-12 md:p-10 hover:bg-panel-dark"
+            >
+              {/* Logo + meta rail */}
+              <div class="flex items-start gap-5 md:col-span-4 md:flex-col md:gap-6">
+                {company.logo ? (
+                  /* Each logo carries its own ground (white, blue), so the chip
+                     stays transparent. Desaturated by default so six different
+                     brand palettes don't fight the charcoal section. */
+                  <div class="size-16 shrink-0 overflow-hidden rounded-xl">
+                    <Image
+                      src={company.logo}
+                      alt=""
+                      width={128}
+                      height={128}
+                      class="h-full w-full object-cover grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    class="grid size-16 shrink-0 place-items-center rounded-xl border border-dashed border-white/15 text-[10px] text-white/45"
+                    aria-hidden="true"
+                  >
+                    logo
+                  </div>
+                )}
+
+                <div class="space-y-1.5">
+                  <p class="text-xs tracking-widest text-white/60 uppercase">
+                    {company.location}
+                  </p>
+                  {company.period && (
+                    <p class="font-mono text-xs text-white/60">{company.period}</p>
+                  )}
+                </div>
               </div>
 
-              <h3 class="text-white transition-colors group-hover:text-gold">
-                {company.name}
-              </h3>
+              {/* Detail */}
+              <div class="md:col-span-8">
+                <h3 class="text-white transition-colors group-hover:text-gold">
+                  {company.name}
+                </h3>
 
-              <p class="mt-2 text-sm text-gold">
-                {company.role ?? (
-                  <Pending dark label="Title pending" />
+                <div class="mt-2 text-sm text-gold">
+                  {company.role ?? <Pending dark label="Title pending" />}
+                </div>
+
+                <div class="mt-4 text-sm text-white/60">
+                  {company.blurb ?? <Pending dark label="Description pending" />}
+                </div>
+
+                {company.highlights.length > 0 && (
+                  <dl class="mt-7 grid gap-x-8 gap-y-5 border-t border-white/10 pt-6 sm:grid-cols-2">
+                    {company.highlights.map((h) => (
+                      <div>
+                        <dt class="text-xs tracking-wide text-white/85 uppercase">
+                          {h.title}
+                        </dt>
+                        <dd class="mt-1.5 text-sm text-white/60">{h.detail}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 )}
-              </p>
-
-              <p class="mt-4 text-sm text-white/60">
-                {company.blurb ?? (
-                  <Pending dark label="Description pending" />
-                )}
-              </p>
-
-              <p class="mt-6 text-xs tracking-widest text-white/60 uppercase">
-                {company.location}
-              </p>
+              </div>
             </article>
           ))
         }

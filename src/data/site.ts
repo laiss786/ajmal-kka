@@ -3,13 +3,23 @@
 // Anything still marked TODO is waiting on the client — drop the answers in
 // here and the pages pick them up. Don't hardcode copy in components.
 
+import type { ImageMetadata } from "astro";
+import gulfOwnLogo from "../assets/logos/gulf-own.webp";
+import goLakamanaLogo from "../assets/logos/go-lakamana.webp";
+import kostaLogo from "../assets/logos/kosta.webp";
+
 export type Company = {
   name: string;
   /** TODO(client): exact title — Founder / Director / Partner / Manager? */
   role: string | null;
-  /** TODO(client): one line on what the business actually does */
+  /** e.g. "2024 — 2026", or "2022 — Present" if still active */
+  period: string | null;
+  /** One line on what he did there */
   blurb: string | null;
+  /** Optional deeper detail. Rendered only when present, so thin entries stay compact. */
+  highlights: { title: string; detail: string }[];
   location: string;
+  logo: ImageMetadata | null;
 };
 
 export type Project = {
@@ -47,12 +57,105 @@ export const site = {
   ],
 
   companies: [
-    { name: "Go Lakamana Travel and Tourism LLC", role: null, blurb: null, location: "Dubai" },
-    { name: "Smash Travel and Tourism LLC", role: null, blurb: null, location: "Dubai" },
-    { name: "Gulf Own Travel and Tourism LLC", role: null, blurb: null, location: "UAE" },
-    { name: "Royal Wave Logistics LLC", role: null, blurb: null, location: "Kochi" },
-    { name: "Kosta Shipping LLC", role: null, blurb: null, location: "Kochi" },
-    { name: "Aquaproandroth", role: "Media and Package Head", blurb: null, location: "—" },
+    {
+      name: "Go Lakamana Travel & Tourism",
+      role: "Founding Operations & Growth Lead",
+      // TODO(client): dates for this one
+      period: null,
+      blurb:
+        "Took an unstructured startup idea to a cross-border travel business, building core operations from scratch in Lakshadweep and expanding into the UAE.",
+      highlights: [
+        {
+          title: "Ground-zero setup",
+          detail:
+            "Designed the organisational framework, SOPs and operational workflows from scratch.",
+        },
+        {
+          title: "International expansion",
+          detail:
+            "Led the move from Lakshadweep into the UAE, covering cross-border licensing, package positioning and operational readiness.",
+        },
+        {
+          title: "Product & destination marketing",
+          detail:
+            "Curated and commercialised travel experiences positioning Lakshadweep as a premier destination.",
+        },
+        {
+          title: "Business model & team",
+          detail:
+            "Built the initial sales, logistics and customer support frameworks that turned local channels into a revenue-generating business.",
+        },
+      ],
+      location: "Lakshadweep · Dubai",
+      logo: goLakamanaLogo,
+    },
+    {
+      name: "Gulf Own Travel and Tourism LLC",
+      role: "Cross-Border Operations & Sales Leader",
+      period: "2024 — 2026",
+      blurb:
+        "Scaled travel and tourism operations across the Gulf and India, running the Kochi branch end to end while aligning strategy and workflows with headquarters in Dubai.",
+      highlights: [
+        {
+          title: "Cross-border leadership",
+          detail:
+            "Directed end-to-end operations for the Kochi branch, aligned to Dubai HQ.",
+        },
+        {
+          title: "Product & go-to-market",
+          detail:
+            "Built customised travel packages and commercial products positioned for Gulf and Indian client bases.",
+        },
+        {
+          title: "Sales & team leadership",
+          detail:
+            "Mentored sales teams and set performance KPIs, daily workflows and client conversion strategy.",
+        },
+        {
+          title: "Marketing & growth",
+          detail:
+            "Ran integrated digital and traditional campaigns to lift package visibility and lead generation.",
+        },
+      ],
+      location: "Dubai · Kochi",
+      logo: gulfOwnLogo,
+    },
+    {
+      // NOTE: brochure reads "Kosta Shipping LLP", not LLC — confirm which.
+      name: "Kosta Shipping LLP",
+      role: "Branch Operations & Sales Setup Lead",
+      // TODO(client): dates for this one
+      period: null,
+      blurb:
+        "Led regional expansion into Chennai, building sales frameworks, marketing strategy and ground-level teams from zero for a Gujarat-headquartered logistics firm.",
+      highlights: [
+        {
+          title: "Regional expansion",
+          detail:
+            "Established and led Chennai operations, driving South India market entry and footprint growth.",
+        },
+        {
+          title: "Team recruitment & structuring",
+          detail:
+            "Built, trained and managed the regional sales team from scratch with structured pipelines, targets and acquisition workflows.",
+        },
+        {
+          title: "Go-to-market strategy",
+          detail:
+            "Formulated localised marketing and business development strategy for Chennai's shipping and freight-forwarding ecosystem.",
+        },
+        {
+          title: "Revenue & client acquisition",
+          detail:
+            "Negotiated and secured key B2B logistics accounts, aligned to company-wide growth targets.",
+        },
+      ],
+      location: "Chennai",
+      logo: kostaLogo,
+    },
+    { name: "Smash Travel and Tourism LLC", role: null, period: null, blurb: null, highlights: [], location: "Dubai", logo: null },
+    { name: "Royal Wave Logistics LLC", role: null, period: null, blurb: null, highlights: [], location: "Kochi", logo: null },
+    { name: "Aquaproandroth", role: "Media and Package Head", period: null, blurb: null, highlights: [], location: "—", logo: null },
   ] satisfies Company[],
 
   // TODO(client): 3–6 projects, each with a result. This section is the one
