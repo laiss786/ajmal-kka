@@ -7,6 +7,7 @@ import type { ImageMetadata } from "astro";
 import gulfOwnLogo from "../assets/logos/gulf-own.webp";
 import goLakamanaLogo from "../assets/logos/go-lakamana.webp";
 import kostaLogo from "../assets/logos/kosta.webp";
+import royalWaveLogo from "../assets/logos/royal-wave.webp";
 
 export type Company = {
   name: string;
@@ -153,7 +154,17 @@ export const site = {
       logo: kostaLogo,
     },
     { name: "Smash Travel and Tourism LLC", role: null, period: null, blurb: null, highlights: [], location: "Dubai", logo: null },
-    { name: "Royal Wave Logistics LLC", role: null, period: null, blurb: null, highlights: [], location: "Kochi", logo: null },
+    {
+      // Logo reads "Royal Wave Shipping & Logistics Pvt Ltd" — name updated to
+      // match the artwork rather than the earlier "Royal Wave Logistics LLC".
+      name: "Royal Wave Shipping & Logistics Pvt Ltd",
+      role: null,
+      period: null,
+      blurb: null,
+      highlights: [],
+      location: "Kochi",
+      logo: royalWaveLogo,
+    },
     { name: "Aquaproandroth", role: "Media and Package Head", period: null, blurb: null, highlights: [], location: "—", logo: null },
   ] satisfies Company[],
 
