@@ -13,33 +13,65 @@ import Pending from "./Pending.astro";
 // (add `import { Image } from "astro:assets";` back at the top)
 ---
 
+{/* min-h-svh, not min-h-screen: on mobile the browser chrome makes 100vh
+    taller than the visible area, which pushed the hero past one scroll. */}
 <section
   id="top"
-  class="relative flex min-h-screen items-center overflow-hidden bg-obsidian pt-16 text-white"
+  data-nav-theme="dark"
+  class="relative flex min-h-svh items-center overflow-hidden bg-obsidian pt-16 text-white"
 >
-  <div class="wrap grid items-center gap-16 py-24 md:grid-cols-12">
+  {/* Soft gold bloom behind the copy so the dark ground isn't flat. */}
+  <div
+    class="pointer-events-none absolute -top-1/4 -left-1/4 size-[70vw] rounded-full bg-radial from-gold/8 to-transparent blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="wrap relative grid w-full items-center gap-12 py-16 md:grid-cols-12 lg:gap-20">
     <div class="md:col-span-7">
       <p data-hero-item class="eyebrow eyebrow-on-dark">{site.title}</p>
 
-      <h1 data-hero-item class="mt-6 text-white">{site.name}</h1>
+      <h1 data-hero-item class="mt-5 text-white">{site.name}</h1>
 
-      <p data-hero-item class="prose-measure mt-8 text-lg text-white/70">
+      <p data-hero-item class="prose-measure mt-6 text-lg text-white/70">
         {site.tagline}
       </p>
 
-      <div data-hero-item class="mt-10 flex flex-wrap gap-4">
-        <a href="#projects" class="btn btn-gold focus-ring">View my work</a>
+      <div data-hero-item class="mt-8 flex flex-wrap gap-4">
+        <a href="#companies" class="btn btn-gold focus-ring">View experience</a>
         <a href="#contact" class="btn btn-outline focus-ring">Get in touch</a>
       </div>
 
+      {/* Figures live here rather than in a separate band — they fill the hero
+          and give the fold something concrete to say. */}
+      <dl
+        data-hero-item
+        class="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8"
+      >
+        {
+          site.stats.map((stat) => (
+            <div>
+              <dt class="sr-only">{stat.label}</dt>
+              <dd>
+                <span class="font-display block text-4xl font-extralight text-gold">
+                  {stat.value}
+                  {stat.suffix}
+                </span>
+                <span class="mt-2 block text-xs leading-snug text-white/60">
+                  {stat.label}
+                </span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
 
     <div data-hero-item class="md:col-span-5">
-      <div data-parallax="5" class="will-change-transform">
+      <div data-parallax="4" class="will-change-transform">
         <div
-          class="relative flex aspect-4/5 w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-xl border border-dashed border-white/20 bg-panel-dark"
+          class="relative flex aspect-4/5 w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-2xl border border-dashed border-white/20 bg-panel-dark"
         >
-          {/* Faint gold wash so the empty slot still reads as designed. */}
           <div
             class="pointer-events-none absolute inset-0 bg-radial from-gold/12 to-transparent"
             aria-hidden="true"

@@ -42,9 +42,6 @@ export const site = {
    */
   draft: true,
 
-  /** Empty slots are drawn up to this count so the grid keeps its rhythm. */
-  minProjectSlots: 3,
-
   name: "Ajmal Komalam",
   /** TODO(client): confirm this is the title he wants under his name */
   title: "Marketing & Sales Strategist",
@@ -168,8 +165,9 @@ export const site = {
     { name: "Aquaproandroth", role: "Media and Package Head", period: null, blurb: null, highlights: [], location: "—", logo: null },
   ] satisfies Company[],
 
-  // TODO(client): 3–6 projects, each with a result. This section is the one
-  // that actually converts high-value clients — it needs numbers.
+  // Not currently rendered — the Projects & Work section was removed from the
+  // page. Left in place since it's real content (Lakamana) in case the
+  // section comes back; nothing here needs to be deleted to bring it back.
   projects: [
     {
       title: "Lakamana Relaunch",
@@ -220,7 +218,6 @@ export const site = {
   nav: [
     { label: "About", href: "#about" },
     { label: "Companies", href: "#companies" },
-    { label: "Projects", href: "#projects" },
     { label: "Expertise", href: "#expertise" },
     { label: "Contact", href: "#contact" },
   ],

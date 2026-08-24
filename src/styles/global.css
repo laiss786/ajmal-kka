@@ -158,27 +158,61 @@
   }
 }
 
-/* Header sits transparent over the hero, then gains a ground once scrolled.
-   Deliberately UNLAYERED: the element carries Tailwind's `bg-obsidian/80` from
-   @layer utilities, and layered styles lose to later layers no matter how
-   specific they are. Unlayered declarations outrank every layer, so this is
-   what actually lets the scrolled state override the utility. */
+/* Header stays glass everywhere — it never solidifies. What changes is the
+   TEXT colour, driven by header[data-theme], synced in Nav.astro to whichever
+   section currently sits behind it.
+
+   Deliberately UNLAYERED: several of these elements also carry Tailwind
+   utility classes (text-white, hover:text-gold, etc.) from @layer utilities,
+   and layered styles lose to later layers regardless of specificity. Only an
+   unlayered rule can override them, which is why this whole block sits
+   outside any @layer — same trick the reveal/parallax rules use above.
+
+   The math behind why text has to switch at all: the header background is a
+   ~35% obsidian tint. Over the dark sections that blends to near-obsidian, so
+   white text is ~19:1. Over the ivory sections it blends to a mid grey
+   (~rgb(168,167,165)), where white text drops to ~2.4:1 — a hard fail. Ink
+   text against that same mid grey lands at ~6:1. So: dark sections get white,
+   light sections get ink, and the crossover is exactly where the contrast
+   number crosses the AA line, not an arbitrary style choice.
+
+   Themed via custom properties, for .nav-logo and .nav-bar ONLY. Reason
+   it's not all four nav elements: the duplicated-rule version (two whole
+   rules competing for the same property, one scoped
+   `header[data-theme="dark"] .x` / `header[data-theme="light"] .x`) —  and
+   later this custom-property version too — measurably failed to recompute
+   for .nav-link and .nav-cta specifically, and ONLY those two: both also
+   carry a `:hover` rule, while .nav-logo/.nav-bar (which work fine, below)
+   don't. Confirmed with the custom property itself: getComputedStyle on the
+   *variable* showed the correct new value on every read, while the `color`
+   property meant to consume it via var() kept returning the old resolved
+   colour — reproducible across many forced-reflow reads. Never pinned down
+   whether that's a real engine bug or specific to this dev environment, so
+   rather than ship something unverifiable, .nav-link and .nav-cta are
+   themed entirely from JS instead (inline styles + real hover listeners,
+   see Nav.astro) — a mechanism proven reliable elsewhere in this codebase
+   (the scroll-reveal system also drives style purely by direct property
+   assignment, not cascade-through-inheritance). */
 header {
-  transition:
-    background-color 0.35s ease,
-    border-color 0.35s ease;
+  --nav-fg: #fff;
+  --nav-bar-bg: #fff;
 }
 
-/* Translucent only while it sits over the hero. Past 80px it solidifies —
-   necessary, not decorative: the ivory sections start a full viewport down, and
-   white nav text over a barely-tinted ivory panel would fail contrast badly. */
-header.is-scrolled {
-  background-color: color-mix(in oklab, var(--color-obsidian) 94%, transparent);
-  border-color: color-mix(in oklab, var(--color-gold) 22%, transparent);
+header[data-theme="light"] {
+  --nav-fg: var(--color-ink);
+  --nav-bar-bg: var(--color-ink);
 }
 
-/* Without backdrop-filter the glass reads as washed-out grey, so fall back to
-   a mostly-opaque ground. */
+.nav-logo {
+  color: var(--nav-fg);
+}
+.nav-bar {
+  background-color: var(--nav-bar-bg);
+}
+
+/* Without backdrop-filter the glass reads as a washed-out smear rather than
+   frosted glass, so fall back to a mostly-opaque ground. Text colour still
+   switches by theme as above — this only changes the background. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   header {
     background-color: color-mix(in oklab, var(--color-obsidian) 88%, transparent);

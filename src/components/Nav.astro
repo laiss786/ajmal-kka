@@ -2,14 +2,16 @@
 import { site } from "../data/site";
 ---
 
+{/* Always translucent glass — never solidifies. Text/icon colour switches
+    between white and ink depending on what's scrolled underneath (see script
+    below), which is what keeps this readable over both the dark and ivory
+    sections instead of just going opaque to dodge the problem. */}
 <header
+  data-theme="dark"
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-obsidian/35 backdrop-blur-xl backdrop-saturate-150"
 >
   <nav class="wrap flex h-16 items-center justify-between" aria-label="Main">
-    <a
-      href="#top"
-      class="font-display text-base font-light tracking-wide text-white focus-ring rounded-sm"
-    >
+    <a href="#top" class="nav-logo focus-ring rounded-sm font-display text-base font-light tracking-wide">
       {site.name}
     </a>
 
@@ -17,10 +19,7 @@ import { site } from "../data/site";
       {
         site.nav.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class="focus-ring rounded-sm text-sm text-white/70 transition-colors hover:text-gold"
-            >
+            <a href={item.href} class="nav-link focus-ring rounded-sm text-sm transition-colors">
               {item.label}
             </a>
           </li>
@@ -28,10 +27,7 @@ import { site } from "../data/site";
       }
     </ul>
 
-    <a
-      href="#contact"
-      class="btn btn-outline focus-ring hidden py-2 text-sm md:inline-flex"
-    >
+    <a href="#contact" class="btn btn-outline nav-cta focus-ring hidden py-2 text-sm md:inline-flex">
       Get in touch
     </a>
 
@@ -46,26 +42,24 @@ import { site } from "../data/site";
       <span class="relative block h-4 w-6" aria-hidden="true">
         <span
           data-bar="top"
-          class="absolute left-0 block h-px w-6 bg-white transition-transform duration-300"
+          class="nav-bar absolute left-0 block h-px w-6 transition-transform duration-300"
           style="top: 2px"></span>
         <span
           data-bar="mid"
-          class="absolute top-1/2 left-0 block h-px w-6 -translate-y-1/2 bg-white transition-opacity duration-200"
+          class="nav-bar absolute top-1/2 left-0 block h-px w-6 -translate-y-1/2 transition-opacity duration-200"
         ></span>
         <span
           data-bar="bot"
-          class="absolute left-0 block h-px w-6 bg-white transition-transform duration-300"
+          class="nav-bar absolute left-0 block h-px w-6 transition-transform duration-300"
           style="bottom: 2px"></span>
       </span>
     </button>
   </nav>
 
-  <!-- Mobile panel. Hidden from AT and tab order until opened. -->
-  <div
-    id="mobile-menu"
-    hidden
-    class="border-t border-white/10 bg-obsidian md:hidden"
-  >
+  <!-- Mobile panel. Solid, not glass — legibility over the open menu matters
+       more than continuing the translucency here. Hidden from AT and tab
+       order until opened. -->
+  <div id="mobile-menu" hidden class="border-t border-white/10 bg-obsidian md:hidden">
     <ul class="wrap flex flex-col py-4">
       {
         site.nav.map((item) => (
@@ -90,6 +84,7 @@ import { site } from "../data/site";
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>("header")!;
   const toggle = document.getElementById("menu-toggle")!;
   const menu = document.getElementById("mobile-menu")!;
   const bars = {
@@ -130,4 +125,121 @@ import { site } from "../data/site";
   matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
     if (e.matches) setOpen(false);
   });
+
+  // Theme sync: the header is always glass, but its text needs to flip
+  // between white and ink depending on what's directly behind it, or it goes
+  // unreadable over the ivory sections (checked: white-on-blended-glass over
+  // ivory lands around 2.4:1). Whichever [data-nav-theme] section currently
+  // spans the header's bottom edge decides the header's theme.
+  const sections = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-nav-theme]"),
+  );
+
+  // .nav-logo / .nav-bar read theme off header[data-theme] via CSS custom
+  // properties (see global.css) — that works fine for them. .nav-link /
+  // .nav-cta don't: same mechanism, but paired with a :hover rule, the
+  // `color` property stopped picking up the updated value on repeated
+  // testing even though the underlying variable updated correctly. Rather
+  // than ship that unresolved, those two are coloured directly from here.
+  const root = getComputedStyle(document.documentElement);
+  const token = (name: string) => root.getPropertyValue(name).trim();
+  const COLOR = {
+    gold: token("--color-gold"),
+    bronze: token("--color-bronze"),
+    ink: token("--color-ink"),
+    ivory: token("--color-ivory"),
+  };
+
+  const navLinks = Array.from(document.querySelectorAll<HTMLElement>(".nav-link"));
+  const cta = document.querySelector<HTMLElement>(".nav-cta");
+
+  let currentTheme = "dark";
+
+  // Bronze is used elsewhere on this site as gold's text-safe counterpart on
+  // light backgrounds — audited there at 4.95:1 against solid ivory
+  // (#FAF8F5). It does NOT carry over to this nav: the header background is
+  // only ~35% obsidian tint, so the light-theme backdrop it actually sits on
+  // is a blended mid-grey (~rgb(168,167,165), luminance ≈0.38), not solid
+  // ivory. Recomputed against that real backdrop, bronze lands at ~2.1:1 — a
+  // hard fail. So on the *translucent* nav specifically, light-theme resting
+  // text stays ink (already the link colour, safely ~6:1 on that backdrop);
+  // bronze is reserved for the CTA's hover fill, which is a fully opaque
+  // solid colour and isn't subject to this at all.
+  const restLinkColor = () =>
+    currentTheme === "light" ? COLOR.ink : "rgba(255, 255, 255, 0.7)";
+  // Dark-theme hover can safely swap to gold text (obsidian backdrop, ~8:1).
+  // Light-theme hover skips the color swap for the reason above and signals
+  // via underline instead — accessible regardless of what's behind it.
+  const hoverLinkColor = () => (currentTheme === "light" ? COLOR.ink : COLOR.gold);
+
+  const ctaRestColor = () => (currentTheme === "light" ? COLOR.ink : COLOR.gold);
+  // Hover fill is always a solid, opaque colour — safe in both themes.
+  const ctaHoverBg = () => (currentTheme === "light" ? COLOR.bronze : COLOR.gold);
+  const ctaHoverFg = () => (currentTheme === "light" ? COLOR.ivory : COLOR.ink);
+
+  const applyNavColors = () => {
+    for (const a of navLinks) {
+      a.style.color = restLinkColor();
+      a.style.textDecoration = "none";
+    }
+    if (cta) {
+      cta.style.color = ctaRestColor();
+      cta.style.borderColor = ctaRestColor();
+    }
+  };
+
+  for (const a of navLinks) {
+    a.addEventListener("mouseenter", () => {
+      a.style.color = hoverLinkColor();
+      if (currentTheme === "light") a.style.textDecoration = "underline";
+    });
+    a.addEventListener("mouseleave", () => {
+      a.style.color = restLinkColor();
+      a.style.textDecoration = "none";
+    });
+  }
+  if (cta) {
+    cta.addEventListener("mouseenter", () => {
+      cta.style.backgroundColor = ctaHoverBg();
+      cta.style.color = ctaHoverFg();
+    });
+    cta.addEventListener("mouseleave", () => {
+      cta.style.backgroundColor = "transparent";
+      cta.style.color = ctaRestColor();
+    });
+  }
+
+  if (sections.length) {
+    let queued = false;
+    const sync = () => {
+      queued = false;
+      const probeY = header.offsetHeight + 1;
+      // Sections are in document order, so the last one whose band covers
+      // probeY is the one actually on top at that point (handles any
+      // slight overlap from margins/rounding the same way paint order would).
+      let theme = sections[0].dataset.navTheme ?? "dark";
+      for (const el of sections) {
+        const r = el.getBoundingClientRect();
+        if (r.top <= probeY && r.bottom > probeY) {
+          theme = el.dataset.navTheme ?? theme;
+        }
+      }
+      header.dataset.theme = theme;
+      if (theme !== currentTheme) {
+        currentTheme = theme;
+        applyNavColors();
+      }
+    };
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(sync);
+    };
+    applyNavColors(); // paint before first sync, so there's no flash of default color
+    sync();
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+  } else {
+    applyNavColors();
+  }
 </script>

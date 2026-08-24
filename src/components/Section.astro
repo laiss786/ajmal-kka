@@ -13,6 +13,7 @@ const { id, eyebrow, heading, dark = false, class: className = "" } = Astro.prop
 
 <section
   id={id}
+  data-nav-theme={dark ? "dark" : "light"}
   class:list={[
     "py-24 md:py-32",
     dark ? "bg-obsidian text-white" : "bg-ivory text-ink",
