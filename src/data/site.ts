@@ -152,7 +152,7 @@ export const site = {
       // Logo reads "Royal Wave Shipping & Logistics Pvt Ltd" — name updated to
       // match the artwork rather than the earlier "Royal Wave Logistics LLC".
       name: "Royal Wave Shipping & Logistics Pvt Ltd",
-      role: null, // TODO(client): job title
+      role: "Business Development Manager",
       period: "2020 — 2021",
       blurb:
         "Architected and executed growth strategy to expand Royal Wave's market penetration across India, repositioning it as a one-stop shipping and logistics partner.",
