@@ -235,14 +235,16 @@ export const site = {
   ] as { value: number; suffix: string; label: string }[],
 
   expertise: [
-    "Marketing Strategy",
-    "Brand Growth",
-    "Digital Storytelling",
-    "E-commerce Strategy",
-    "Social Media Narratives",
-    "Campaign Design",
-    "Regional Market Expansion",
-    "Sales Enablement",
+    "Strategic Thinker",
+    "Strong Sales Mindset",
+    "Marketing-Oriented",
+    "Business Development Focused",
+    "Leadership & Ownership",
+    "Communication Skills",
+    "Adaptability",
+    "Relationship Builder",
+    "Result-Driven",
+    "Entrepreneurial Attitude",
   ],
 
   /** TODO(client): press mentions, interviews, awards. Section hides if empty. */
