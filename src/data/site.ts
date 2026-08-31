@@ -49,9 +49,9 @@ export const site = {
 
   /** TODO(client): confirm final wording, or supply a rewrite */
   bio: [
-    "I'm a marketing and sales strategist working at the intersection of travel, tourism and digital commerce, with a focus on digital storytelling and regional brand growth.",
-    "I hold management roles across a group of travel, tourism and logistics companies, and serve as Media and Package Head for Aquaproandroth. My work connects three distinct markets — Dubai, Kochi, and my native Lakshadweep.",
-    "From designing targeted marketing campaigns to spearheading the relaunch of Lakamana, Lakshadweep's first e-commerce platform, I build modern digital content, social media narratives and brand strategy that drive measurable business growth.",
+    "I am a results-driven Marketing & Sales Strategist with 7+ years of professional experience in sales, business development, customer relationship management, and marketing strategy.",
+    "Throughout my career, I have developed strong expertise in identifying business opportunities, building long-term client relationships, generating revenue, and developing effective sales strategies. I enjoy understanding customer needs and converting those insights into practical strategies that support business growth.",
+    "My experience has strengthened my ability to work across sales, marketing, business development, client acquisition, negotiation, and team coordination. I am comfortable working in target-driven environments and adapting quickly to new markets, industries, and customer requirements.",
   ],
 
   companies: [
