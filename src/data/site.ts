@@ -150,15 +150,66 @@ export const site = {
       location: "Chennai · HQ Ernakulam",
       logo: kostaLogo,
     },
-    { name: "Smash Travel and Tourism LLC", role: null, period: null, blurb: null, highlights: [], location: "Dubai", logo: null },
+    {
+      name: "Smash Travel and Tourism LLC",
+      role: null,
+      // TODO(client): title + dates for this one
+      period: null,
+      blurb:
+        "Built and led B2B travel sales — luxury itineraries, corporate MICE, and desert safari packages — for international trade partners.",
+      highlights: [
+        {
+          title: "Product packaging",
+          detail:
+            "Curated and launched customised B2B tour packages, luxury itineraries, corporate MICE solutions and desert safari experiences for diverse international client profiles.",
+        },
+        {
+          title: "Sales team leadership",
+          detail:
+            "Managed and coached a dedicated B2B sales team, setting KPIs, optimising lead conversion pipelines and overseeing daily sales operations.",
+        },
+        {
+          title: "Account management & retention",
+          // TODO(client): retention % — his notes have "[X]%", not a real
+          // number. Never fill this with an invented figure.
+          detail:
+            "Ran proactive key account management to retain top-tier travel agents and trade partners.",
+        },
+        {
+          title: "Market trend adaptation",
+          detail:
+            "Tracked shifting Middle East travel demand and seasonal trends to adjust pricing, promotions and inventory allocation.",
+        },
+      ],
+      location: "Dubai",
+      logo: null,
+    },
     {
       // Logo reads "Royal Wave Shipping & Logistics Pvt Ltd" — name updated to
       // match the artwork rather than the earlier "Royal Wave Logistics LLC".
       name: "Royal Wave Shipping & Logistics Pvt Ltd",
       role: null,
+      // TODO(client): title + dates for this one
       period: null,
-      blurb: null,
-      highlights: [],
+      blurb:
+        "Architected and executed growth strategy to expand Royal Wave's market penetration across India, repositioning it as a one-stop shipping and logistics partner.",
+      highlights: [
+        {
+          title: "Market expansion strategy",
+          detail:
+            "Developed multi-regional outreach targeting vessel owners, fleet operators and logistics management firms across Indian ports.",
+        },
+        {
+          title: "Brand & positioning",
+          detail:
+            "Repositioned Royal Wave from a regional service provider to a trusted one-stop shipping and logistics partner, strengthening digital collateral and B2B communication.",
+        },
+        {
+          title: "Sales enablement",
+          detail:
+            "Aligned sales workflows and lead acquisition with operational capabilities, improving response times for client inquiries and contract conversions.",
+        },
+      ],
       location: "Kochi",
       logo: royalWaveLogo,
     },
