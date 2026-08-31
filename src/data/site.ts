@@ -213,7 +213,37 @@ export const site = {
       location: "Kochi",
       logo: royalWaveLogo,
     },
-    { name: "Aquaproandroth", role: "Media and Package Head", period: null, blurb: null, highlights: [], location: "—", logo: null },
+    {
+      name: "Khaleeliya Enterprises",
+      role: null, // TODO(client): job title — client sent company/industry/duties, no title
+      period: null, // TODO(client): dates
+      blurb:
+        "Drove sales and marketing execution for Khaleeliya Enterprises' FMCG line in Lakshadweep — retailer and distributor relationships, territory growth, and customer retention.",
+      highlights: [
+        {
+          title: "Sales & marketing strategy",
+          detail:
+            "Developed and implemented sales and marketing strategies, planning promotional activity and following up leads to grow product reach and revenue.",
+        },
+        {
+          title: "Client & account management",
+          detail:
+            "Managed relationships with retailers, distributors and key business clients, balancing new acquisition with customer retention.",
+        },
+        {
+          title: "Market & territory development",
+          detail:
+            "Identified new market opportunities, expanded the customer base, and supported territory development to increase market penetration.",
+        },
+        {
+          title: "Market intelligence & reporting",
+          detail:
+            "Tracked market trends, customer requirements and competitor activity, coordinated with internal teams and distribution channels, and reported findings to management for strategic planning.",
+        },
+      ],
+      location: "Lakshadweep",
+      logo: null,
+    },
   ] satisfies Company[],
 
   // Not currently rendered — the Projects & Work section was removed from the
