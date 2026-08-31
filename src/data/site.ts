@@ -45,7 +45,7 @@ export const site = {
   name: "Ajmal Komalam",
   /** TODO(client): confirm this is the title he wants under his name */
   title: "Marketing & Sales Strategist",
-  tagline: "Connecting markets across Dubai, Kochi and Lakshadweep.",
+  tagline: "Sales & Business Development | Marketing Strategy | Client Acquisition | Revenue Growth",
 
   /** TODO(client): confirm final wording, or supply a rewrite */
   bio: [
