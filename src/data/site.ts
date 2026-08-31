@@ -56,37 +56,6 @@ export const site = {
 
   companies: [
     {
-      name: "Go Lakamana Travel & Tourism",
-      role: "Founding Operations & Growth Lead",
-      period: "2022 — 2023",
-      blurb:
-        "Took an unstructured startup idea to a cross-border travel business, building core operations from scratch in Lakshadweep and expanding into the UAE.",
-      highlights: [
-        {
-          title: "Ground-zero setup",
-          detail:
-            "Designed the organisational framework, SOPs and operational workflows from scratch.",
-        },
-        {
-          title: "International expansion",
-          detail:
-            "Led the move from Lakshadweep into the UAE, covering cross-border licensing, package positioning and operational readiness.",
-        },
-        {
-          title: "Product & destination marketing",
-          detail:
-            "Curated and commercialised travel experiences positioning Lakshadweep as a premier destination.",
-        },
-        {
-          title: "Business model & team",
-          detail:
-            "Built the initial sales, logistics and customer support frameworks that turned local channels into a revenue-generating business.",
-        },
-      ],
-      location: "Lakshadweep · Dubai",
-      logo: goLakamanaLogo,
-    },
-    {
       name: "Gulf Own Travel and Tourism LLC",
       role: "Cross-Border Operations & Sales Leader",
       period: "2024 — Aug 2026",
@@ -149,38 +118,35 @@ export const site = {
       logo: kostaLogo,
     },
     {
-      name: "Smash Travel and Tourism LLC",
-      role: null,
-      // TODO(client): title + dates for this one
-      period: null,
+      name: "Go Lakamana Travel & Tourism",
+      role: "Founding Operations & Growth Lead",
+      period: "2022 — 2023",
       blurb:
-        "Built and led B2B travel sales — luxury itineraries, corporate MICE, and desert safari packages — for international trade partners.",
+        "Took an unstructured startup idea to a cross-border travel business, building core operations from scratch in Lakshadweep and expanding into the UAE.",
       highlights: [
         {
-          title: "Product packaging",
+          title: "Ground-zero setup",
           detail:
-            "Curated and launched customised B2B tour packages, luxury itineraries, corporate MICE solutions and desert safari experiences for diverse international client profiles.",
+            "Designed the organisational framework, SOPs and operational workflows from scratch.",
         },
         {
-          title: "Sales team leadership",
+          title: "International expansion",
           detail:
-            "Managed and coached a dedicated B2B sales team, setting KPIs, optimising lead conversion pipelines and overseeing daily sales operations.",
+            "Led the move from Lakshadweep into the UAE, covering cross-border licensing, package positioning and operational readiness.",
         },
         {
-          title: "Account management & retention",
-          // TODO(client): retention % — his notes have "[X]%", not a real
-          // number. Never fill this with an invented figure.
+          title: "Product & destination marketing",
           detail:
-            "Ran proactive key account management to retain top-tier travel agents and trade partners.",
+            "Curated and commercialised travel experiences positioning Lakshadweep as a premier destination.",
         },
         {
-          title: "Market trend adaptation",
+          title: "Business model & team",
           detail:
-            "Tracked shifting Middle East travel demand and seasonal trends to adjust pricing, promotions and inventory allocation.",
+            "Built the initial sales, logistics and customer support frameworks that turned local channels into a revenue-generating business.",
         },
       ],
-      location: "Dubai",
-      logo: null,
+      location: "Lakshadweep · Dubai",
+      logo: goLakamanaLogo,
     },
     {
       // Logo reads "Royal Wave Shipping & Logistics Pvt Ltd" — name updated to
@@ -262,7 +228,7 @@ export const site = {
   // Lakamana claim from his own bio. Do not add invented numbers; the growth /
   // revenue figures are still outstanding.
   stats: [
-    { value: 6, suffix: "", label: "Companies and ventures" },
+    { value: 5, suffix: "", label: "Companies and ventures" },
     { value: 3, suffix: "", label: "Markets connected" },
     { value: 1, suffix: "st", label: "E-commerce platform in Lakshadweep" },
     // TODO(client): a growth or revenue figure belongs here once supplied.
