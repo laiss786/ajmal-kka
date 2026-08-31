@@ -178,7 +178,7 @@ export const site = {
     },
     {
       name: "Khaleeliya Enterprises",
-      role: null, // TODO(client): job title — client sent company/industry/duties, no title
+      role: "Branch Manager",
       period: "2017 — 2020",
       blurb:
         "Drove sales and marketing execution for Khaleeliya Enterprises' FMCG line in Lakshadweep — retailer and distributor relationships, territory growth, and customer retention.",
