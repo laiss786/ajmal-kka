@@ -58,8 +58,7 @@ export const site = {
     {
       name: "Go Lakamana Travel & Tourism",
       role: "Founding Operations & Growth Lead",
-      // TODO(client): dates for this one
-      period: null,
+      period: "2022 — 2023",
       blurb:
         "Took an unstructured startup idea to a cross-border travel business, building core operations from scratch in Lakshadweep and expanding into the UAE.",
       highlights: [
@@ -121,8 +120,7 @@ export const site = {
     {
       name: "Kosta Shipping LLP",
       role: "Branch Operations & Sales Setup Lead",
-      // TODO(client): dates for this one
-      period: null,
+      period: "2023 — 2024",
       blurb:
         "Led regional expansion into Chennai for the Ernakulam-headquartered logistics firm, building sales frameworks, marketing strategy and ground-level teams from zero.",
       highlights: [
@@ -188,9 +186,8 @@ export const site = {
       // Logo reads "Royal Wave Shipping & Logistics Pvt Ltd" — name updated to
       // match the artwork rather than the earlier "Royal Wave Logistics LLC".
       name: "Royal Wave Shipping & Logistics Pvt Ltd",
-      role: null,
-      // TODO(client): title + dates for this one
-      period: null,
+      role: null, // TODO(client): job title
+      period: "2020 — 2021",
       blurb:
         "Architected and executed growth strategy to expand Royal Wave's market penetration across India, repositioning it as a one-stop shipping and logistics partner.",
       highlights: [
@@ -216,7 +213,7 @@ export const site = {
     {
       name: "Khaleeliya Enterprises",
       role: null, // TODO(client): job title — client sent company/industry/duties, no title
-      period: null, // TODO(client): dates
+      period: "2017 — 2020",
       blurb:
         "Drove sales and marketing execution for Khaleeliya Enterprises' FMCG line in Lakshadweep — retailer and distributor relationships, territory growth, and customer retention.",
       highlights: [
