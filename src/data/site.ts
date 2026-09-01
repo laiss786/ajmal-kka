@@ -8,6 +8,7 @@ import gulfOwnLogo from "../assets/logos/gulf-own.webp";
 import goLakamanaLogo from "../assets/logos/go-lakamana.webp";
 import kostaLogo from "../assets/logos/kosta.webp";
 import royalWaveLogo from "../assets/logos/royal-wave.webp";
+import khaleeliyaLogo from "../assets/logos/khaleeliya.webp";
 
 export type Company = {
   name: string;
@@ -205,7 +206,7 @@ export const site = {
         },
       ],
       location: "Lakshadweep",
-      logo: null,
+      logo: khaleeliyaLogo,
     },
   ] satisfies Company[],
 
